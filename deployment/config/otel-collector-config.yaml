@@ -7,15 +7,15 @@ exporters:
   prometheusremotewrite:
     endpoint: "http://victoriametrics:8428/api/v1/write"
 
-  logging:
+  debug: {}
 
-  jaeger:
-    endpoint: jaeger-all-in-one:14250
-    tls:
-      insecure: true
+  zipkin:
+    endpoint: "http://jaeger-all-in-one:9411/api/v2/spans"  # 使用 Zipkin 导出器
 
 processors:
   batch:
+    timeout: 5s         # 批处理超时
+    send_batch_size: 100 # 每批发送的最大数量
 
 extensions:
   health_check:
@@ -30,8 +30,8 @@ service:
     traces:
       receivers: [ otlp ]
       processors: [ batch ]
-      exporters: [ logging, jaeger ]
+      exporters: [ debug, zipkin ]  # 使用 Zipkin 导出器
     metrics:
       receivers: [ otlp ]
       processors: [ batch ]
-      exporters: [ logging, prometheusremotewrite ]
+      exporters: [ debug, prometheusremotewrite ]
