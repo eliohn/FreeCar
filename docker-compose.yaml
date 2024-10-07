@@ -160,4 +160,5 @@ services:
 
 networks:
   freecar-network:
-    driver: overlay
+#    driver: overlay
+    external:
